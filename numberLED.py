@@ -51,13 +51,13 @@ try:
         for di in digit:
             if tempstr_list[di] == "0":
                 
-                GPIO.output(Pins["pin_A"],0)   
-                GPIO.output(Pins["pin_B"],0)
-                GPIO.output(Pins["pin_C"],0)
-                GPIO.output(Pins["pin_D"],0)
-                GPIO.output(Pins["pin_E"],0)
-                GPIO.output(Pins["pin_F"],0)
-                GPIO.output(Pins["pin_G"],1)
+                GPIO.output(Pins["pin_A"],1)   
+                GPIO.output(Pins["pin_B"],1)
+                GPIO.output(Pins["pin_C"],1)
+                GPIO.output(Pins["pin_D"],1)
+                GPIO.output(Pins["pin_E"],1)
+                GPIO.output(Pins["pin_F"],1)
+                GPIO.output(Pins["pin_G"],0)
                 if di ==0:
                     GPIO.output(Pins["pin_D1"],1)
                 if di ==1:
