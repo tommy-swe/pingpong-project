@@ -13,7 +13,7 @@ for pin in pin_LED:
 
 try:
     while(True):
-        print("random")
+        indx = input("random:--")
         rand_idx = random.choice(pin_LED)
         GPIO.output(rand_idx, 0)
         
