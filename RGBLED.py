@@ -11,7 +11,7 @@ GPIO.output(15,1)
 
 try:
     while(True):
-        request = raw_input("RGB-->")
+        request = input("RGB-->")
         
 except KeyboardInterrupt:
     GPIO.cleanup()
