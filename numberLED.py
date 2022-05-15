@@ -59,13 +59,13 @@ try:
                 GPIO.output(Pins["pin_F"],1)
                 GPIO.output(Pins["pin_G"],0)
                 if di ==0:
-                    GPIO.output(Pins["pin_D1"],0)
+                    GPIO.output(Pins["pin_D1"],1)
                 if di ==1:
-                    GPIO.output(Pins["pin_D2"],0)
+                    GPIO.output(Pins["pin_D2"],1)
                 if di == 2:
-                    GPIO.output(Pins["pin_D3"],0)
+                    GPIO.output(Pins["pin_D3"],1)
                 if di == 3:
-                    GPIO.output(Pins["pin_D4"],0)
+                    GPIO.output(Pins["pin_D4"],1)
 
             if tempstr_list[di] == "1":
                 
