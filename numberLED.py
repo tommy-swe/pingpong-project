@@ -1,5 +1,5 @@
 # from machine import Pin
-import utime
+import time
 
 import RPi.GPIO as GPIO
 
@@ -274,7 +274,7 @@ while(True):
             GPIO.output(Pins["pin_DP"],1)
 
         # light up current led in 0.001 sec and then shut down it and mov eto next digit
-        utime.sleep(0.001)
+        time.sleep(0.001)
         GPIO.output(Pins["pin_D1"], 0)
         GPIO.output(Pins["pin_D2"], 0)
         GPIO.output(Pins["pin_D3"], 0)
