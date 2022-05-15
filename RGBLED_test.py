@@ -79,4 +79,5 @@ if __name__ == '__main__':
 	# When 'Ctrl+C' is pressed, the program 
 	# destroy() will be  executed.
 	except KeyboardInterrupt:
+        
 		destroy()
