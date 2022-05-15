@@ -59,13 +59,13 @@ try:
                 GPIO.output(Pins["pin_F"],1)
                 GPIO.output(Pins["pin_G"],0)
                 if di ==0:
-                    GPIO.output(Pins["pin_D1"],1)
+                    GPIO.output(Pins["pin_D1"],0)
                 if di ==1:
-                    GPIO.output(Pins["pin_D2"],1)
+                    GPIO.output(Pins["pin_D2"],0)
                 if di == 2:
-                    GPIO.output(Pins["pin_D3"],1)
+                    GPIO.output(Pins["pin_D3"],0)
                 if di == 3:
-                    GPIO.output(Pins["pin_D4"],1)
+                    GPIO.output(Pins["pin_D4"],0)
 
             if tempstr_list[di] == "1":
                 
@@ -77,13 +77,13 @@ try:
                 GPIO.output(Pins["pin_F"],0)
                 GPIO.output(Pins["pin_G"],0)
                 if di ==0:
-                    GPIO.output(Pins["pin_D1"],1)
+                    GPIO.output(Pins["pin_D1"],0)
                 if di ==1:
-                    GPIO.output(Pins["pin_D2"],1)
+                    GPIO.output(Pins["pin_D2"],0)
                 if di == 2:
-                    GPIO.output(Pins["pin_D3"],1)
+                    GPIO.output(Pins["pin_D3"],0)
                 if di == 3:
-                    GPIO.output(Pins["pin_D4"],1)
+                    GPIO.output(Pins["pin_D4"],0)
 
             if tempstr_list[di] == "2":
                 
@@ -95,13 +95,13 @@ try:
                 GPIO.output(Pins["pin_F"],0)
                 GPIO.output(Pins["pin_G"],1)
                 if di ==0:
-                    GPIO.output(Pins["pin_D1"],1)
+                    GPIO.output(Pins["pin_D1"],0)
                 if di ==1:
-                    GPIO.output(Pins["pin_D2"],1)
+                    GPIO.output(Pins["pin_D2"],0)
                 if di == 2:
-                    GPIO.output(Pins["pin_D3"],1)
+                    GPIO.output(Pins["pin_D3"],0)
                 if di == 3:
-                    GPIO.output(Pins["pin_D4"],1)
+                    GPIO.output(Pins["pin_D4"],0)
 
             if tempstr_list[di] == "3":
                 
@@ -113,13 +113,13 @@ try:
                 GPIO.output(Pins["pin_F"],0)
                 GPIO.output(Pins["pin_G"],1)
                 if di ==0:
-                    GPIO.output(Pins["pin_D1"],1)
+                    GPIO.output(Pins["pin_D1"],0)
                 if di ==1:
-                    GPIO.output(Pins["pin_D2"],1)
+                    GPIO.output(Pins["pin_D2"],0)
                 if di == 2:
-                    GPIO.output(Pins["pin_D3"],1)
+                    GPIO.output(Pins["pin_D3"],0)
                 if di == 3:
-                    GPIO.output(Pins["pin_D4"],1)
+                    GPIO.output(Pins["pin_D4"],0)
 
             if tempstr_list[di] == "4":
                 
@@ -131,13 +131,13 @@ try:
                 GPIO.output(Pins["pin_F"],1)
                 GPIO.output(Pins["pin_G"],1)
                 if di ==0:
-                    GPIO.output(Pins["pin_D1"],1)
+                    GPIO.output(Pins["pin_D1"],0)
                 if di ==1:
-                    GPIO.output(Pins["pin_D2"],1)
+                    GPIO.output(Pins["pin_D2"],0)
                 if di == 2:
-                    GPIO.output(Pins["pin_D3"],1)
+                    GPIO.output(Pins["pin_D3"],0)
                 if di == 3:
-                    GPIO.output(Pins["pin_D4"],1)
+                    GPIO.output(Pins["pin_D4"],0)
 
             if tempstr_list[di] == "5":
                 
@@ -149,13 +149,13 @@ try:
                 GPIO.output(Pins["pin_F"],1)
                 GPIO.output(Pins["pin_G"],1)
                 if di ==0:
-                    GPIO.output(Pins["pin_D1"],1)
+                    GPIO.output(Pins["pin_D1"],0)
                 if di ==1:
-                    GPIO.output(Pins["pin_D2"],1)
+                    GPIO.output(Pins["pin_D2"],0)
                 if di == 2:
-                    GPIO.output(Pins["pin_D3"],1)
+                    GPIO.output(Pins["pin_D3"],0)
                 if di == 3:
-                    GPIO.output(Pins["pin_D4"],1)
+                    GPIO.output(Pins["pin_D4"],0)
 
             if tempstr_list[di] == "6":
                 
@@ -165,19 +165,19 @@ try:
                 GPIO.output(Pins["pin_D"],1)
                 GPIO.output(Pins["pin_E"],1)
                 GPIO.output(Pins["pin_F"],1)
-                GPIO.output(Pins["pin_G"],0)
+                GPIO.output(Pins["pin_G"],1)
                 if di ==0:
-                    GPIO.output(Pins["pin_D1"],1)
+                    GPIO.output(Pins["pin_D1"],0)
                 if di ==1:
-                    GPIO.output(Pins["pin_D2"],1)
+                    GPIO.output(Pins["pin_D2"],0)
                 if di == 2:
-                    GPIO.output(Pins["pin_D3"],1)
+                    GPIO.output(Pins["pin_D3"],0)
                 if di == 3:
-                    GPIO.output(Pins["pin_D4"],1)
+                    GPIO.output(Pins["pin_D4"],0)
 
             if tempstr_list[di] == "7":
                 
-                GPIO.output(Pins["pin_A"],0)   
+                GPIO.output(Pins["pin_A"],1)   
                 GPIO.output(Pins["pin_B"],1)
                 GPIO.output(Pins["pin_C"],1)
                 GPIO.output(Pins["pin_D"],0)
@@ -185,13 +185,13 @@ try:
                 GPIO.output(Pins["pin_F"],0)
                 GPIO.output(Pins["pin_G"],0)
                 if di ==0:
-                    GPIO.output(Pins["pin_D1"],1)
+                    GPIO.output(Pins["pin_D1"],0)
                 if di ==1:
-                    GPIO.output(Pins["pin_D2"],1)
+                    GPIO.output(Pins["pin_D2"],0)
                 if di == 2:
-                    GPIO.output(Pins["pin_D3"],1)
+                    GPIO.output(Pins["pin_D3"],0)
                 if di == 3:
-                    GPIO.output(Pins["pin_D4"],1)
+                    GPIO.output(Pins["pin_D4"],0)
 
             if tempstr_list[di] == "8":
                 
@@ -203,13 +203,13 @@ try:
                 GPIO.output(Pins["pin_F"],1)
                 GPIO.output(Pins["pin_G"],1)
                 if di ==0:
-                    GPIO.output(Pins["pin_D1"],1)
+                    GPIO.output(Pins["pin_D1"],0)
                 if di ==1:
-                    GPIO.output(Pins["pin_D2"],1)
+                    GPIO.output(Pins["pin_D2"],0)
                 if di == 2:
-                    GPIO.output(Pins["pin_D3"],1)
+                    GPIO.output(Pins["pin_D3"],0)
                 if di == 3:
-                    GPIO.output(Pins["pin_D4"],1)
+                    GPIO.output(Pins["pin_D4"],0)
 
             if tempstr_list[di] == "9":
                 
@@ -221,30 +221,30 @@ try:
                 GPIO.output(Pins["pin_F"],1)
                 GPIO.output(Pins["pin_G"],1)
                 if di ==0:
-                    GPIO.output(Pins["pin_D1"],1)
+                    GPIO.output(Pins["pin_D1"],0)
                 if di ==1:
-                    GPIO.output(Pins["pin_D2"],1)
+                    GPIO.output(Pins["pin_D2"],0)
                 if di == 2:
-                    GPIO.output(Pins["pin_D3"],1)
+                    GPIO.output(Pins["pin_D3"],0)
                 if di == 3:
-                    GPIO.output(Pins["pin_D4"],1)
+                    GPIO.output(Pins["pin_D4"],0)
 
             if di ==0:
-                GPIO.output(Pins["pin_DP"],1)
-            if di ==1:
                 GPIO.output(Pins["pin_DP"],0)
+            if di ==1:
+                GPIO.output(Pins["pin_DP"],1)
             if di == 2:
-                GPIO.output(Pins["pin_DP"],1)
+                GPIO.output(Pins["pin_DP"],0)
             if di == 3:
-                GPIO.output(Pins["pin_DP"],1)
+                GPIO.output(Pins["pin_DP"],0)
 
-        # light up current led in 0.001 sec and then shut down it and mov eto next digit
-        time.sleep(0.5)
-        GPIO.output(Pins["pin_D1"], 0)
-        GPIO.output(Pins["pin_D2"], 0)
-        GPIO.output(Pins["pin_D3"], 0)
-        GPIO.output(Pins["pin_D4"], 0)
-        GPIO.output(Pins["pin_DP"], 1)
-        timetoread += 1
+            # light up current led in 0.001 sec and then shut down it and mov eto next digit
+            time.sleep(0.005)
+            GPIO.output(Pins["pin_D1"], 1)
+            GPIO.output(Pins["pin_D2"], 1)
+            GPIO.output(Pins["pin_D3"], 1)
+            GPIO.output(Pins["pin_D4"], 1)
+            GPIO.output(Pins["pin_DP"], 0)
+            timetoread += 1
 except KeyboardInterrupt:
 		GPIO.cleanup()
