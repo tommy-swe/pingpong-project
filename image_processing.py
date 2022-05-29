@@ -8,46 +8,51 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from matplotlib import colors
 
-cap = cv2.VideoCapture('video_data/half_table_middle.mp4')
-fps = cap.get(cv2.CAP_PROP_FPS)
-print("Frame rate: ", int(fps), "FPS")
+
 
 
 def detect_table_Color(img):
 
-   
+    height,width = img.shape[:2]
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
+   
     #table segmentation
-    light_blue = (110, 100, 100)
-    dark_blue = (150, 255, 255)
+    light_blue = (105, 70, 70)
+    dark_blue = (128, 255, 255)
     
     mask_blue = cv2.inRange(hsv, light_blue, dark_blue)
   
     # final_mask = mask_orange + mask_blue #segment table and ball
     final_mask = mask_blue # segment only table
+  
    
-    final_mask = cv2.medianBlur(final_mask, ksize = 9)
-
-    result = cv2.bitwise_and(img, img, mask=final_mask)
+    final_mask = cv2.medianBlur(final_mask, ksize = 7)
+    pesudo_mask = np.zeros((height,width), np.uint8)
 
     #draw contours        
     contours, hierarchy = cv2.findContours(final_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+    if len(contours) != 0:
+        c = max(contours, key = cv2.contourArea)
+        hull = cv2.convexHull(c, False)
+        cv2.drawContours(pesudo_mask, [hull], 0, 255, -1)
     
+    result = cv2.bitwise_and(img, img, mask=pesudo_mask)
     if len(contours) != 0:
         # draw in blue the contours that were founded
-        cv2.drawContours(result, contours, -1, (255, 255, 0), 3)
+        # cv2.drawContours(result, contours, -1, (255, 255, 0), 3)
 
         # find the biggest countour (c) by the area
         c = max(contours, key = cv2.contourArea)
-        cv2.drawContours(result, [c], 0, (255, 0, 255), 3)
+        cv2.drawContours(result, [c], 0, (255, 125, 255), 3)
+        cv2.drawContours(result, [hull], 0, (255, 0, 255), 3)
         x,y,w,h = cv2.boundingRect(c)
 
     # draw the biggest contour (c) in green
-    cv2.rectangle(result,(x,y),(x+w,y+h),(0,255,0),2)
-
+    cv2.rectangle(result,(x,y),(x+w,y+h),(255, 128, 128),2)
   
-    return result, final_mask, [x, y, w, h]
+    return result, pesudo_mask, [x, y, w, h]
 
 
 def ball_in_table_detect(img, mask, bg_mask):
@@ -60,7 +65,7 @@ def ball_in_table_detect(img, mask, bg_mask):
         # find the biggest countour (c) by the area
         cv2.drawContours(output, contours, -1, (255, 255, 0), 3)
         c = max(contours, key = cv2.contourArea)
-        cv2.drawContours(output, [c], 0, (0, 0, 255), -1)
+        cv2.drawContours(output, [c], 0, (255, 128, 128), -1)
         x,y,w,h = cv2.boundingRect(c)
 
     return output
@@ -100,12 +105,15 @@ def draw_trajectory(img, trajectory):
      
     output = img.copy()
     n = len(trajectory)
-    for i in range(n - 5, n):
-        a1, b1, r1 = trajectory[i]
-        a2, b2, r2 = trajectory[i+1]
-        cv2.circle(output, (a1, b1), 1, (255, 255, 255), -1)
-        cv2.line(output, (a1, b1), (a2, b2), (125, 125, 125), 2)
-    
+    if(n > 1):
+        for i in range(max(0, n - 4), n - 1):
+            a1, b1, r1 = trajectory[i]
+            a2, b2, r2 = trajectory[i+1]
+            cv2.circle(output, (a1, b1), 4, (255, 255, 255), -1)
+            if(b2 > b1):
+                cv2.line(output, (a1, b1), (a2, b2), (0, 255, 0), 2)
+            else:
+                cv2.line(output, (a1, b1), (a2, b2), (0, 165, 255), 2)
     return output
 
 
@@ -128,35 +136,45 @@ def draw_color_hist(img):
     plt.show()
     # plt.pause(0.1)
 
+import os
 
 if __name__ == "__main__":
 
-    size = (640, 480)
-    fourcc = cv2.VideoWriter_fourcc('X','V','I','D')
-    # output = cv2.VideoWriter('half_table_middle.avi', fourcc, fps, size)
-    output = cv2.VideoWriter('test.avi', fourcc, 10, size)
-    flag = 0
-    trajectory = []
-    try:
-        while(cap.isOpened()):
-            ret, frame = cap.read()
-           
-            re_frame = cv2.resize(frame, size, interpolation = cv2.INTER_AREA)
-            out, mask, rec = detect_table_Color(re_frame)
-            if(flag == 0):
-                mask_bg = mask
-                flag += 1
-            table_with_ball, c = detect_ball_Houghtransform(out, mask)
-            # draw_color_hist(out)
-            if(len(c) == 0):
-                trajectory.append(c)
+    for video in os.listdir("video_data"):
+        cap = cv2.VideoCapture(os.path.join('video_data', video))
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        print("Video name: ", video)
+        print("Frame rate: ", int(fps), "FPS")
 
-            cv2.imshow('contours',  table_with_ball)
-            cv2.imshow('frame', mask)
-            #   cv2.waitKey(10)
-            if cv2.waitKey(0) & 0xFF == ord('q'):
-                break
-            output.write(table_with_ball)
-    except:
-        cap.release()
-        cv2.destroyAllWindows()
+        size = (640, 480)
+        fourcc = cv2.VideoWriter_fourcc('X','V','I','D')
+        # output = cv2.VideoWriter('half_table_middle.avi', fourcc, fps, size)
+        output = cv2.VideoWriter(os.path.join('result_video', video + ".avi"), fourcc, 10, size)
+        flag = 0
+        trajectory = []
+        try:
+            while(cap.isOpened()):
+                ret, frame = cap.read()
+            
+                re_frame = cv2.resize(frame, size, interpolation = cv2.INTER_AREA)
+                out, mask, rec = detect_table_Color(re_frame)
+                if(flag == 0):
+                    mask_bg = mask
+                    flag += 1
+                table_with_ball, c = detect_ball_Houghtransform(out, mask)
+                # draw_color_hist(out)
+                if(len(c) > 0):
+                    trajectory.append(c)
+                    table_with_ball = draw_trajectory(table_with_ball, trajectory)
+                else:
+                    trajectory = []
+
+                cv2.imshow('contours',  table_with_ball)
+                cv2.imshow('frame', re_frame)
+                #   cv2.waitKey(10)
+                if cv2.waitKey(33) & 0xFF == ord('q'):
+                    break
+                output.write(table_with_ball)
+        except:
+            cap.release()
+            cv2.destroyAllWindows()
