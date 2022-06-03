@@ -7,7 +7,8 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from matplotlib import colors
-
+import imutils
+from sympy import re
 
 
 
@@ -27,7 +28,7 @@ def detect_table_Color(img):
     final_mask = mask_blue # segment only table
   
    
-    final_mask = cv2.medianBlur(final_mask, ksize = 7)
+    final_mask = cv2.medianBlur(final_mask, ksize = 9)
     pesudo_mask = np.zeros((height,width), np.uint8)
 
     #draw contours        
@@ -52,7 +53,20 @@ def detect_table_Color(img):
     # draw the biggest contour (c) in green
     cv2.rectangle(result,(x,y),(x+w,y+h),(255, 128, 128),2)
   
-    return result, pesudo_mask, [x, y, w, h]
+    return result, final_mask, [x, y, w, h]
+
+def net_detect(img, rec):
+
+    output = img.copy()
+    x, y, w, h = rec
+    p1x = x + w//2
+    p1y = y
+    p2x = x + w//2
+    p2y = y + h
+    cv2.line(output, (p1x, p1y), (p2x, p2y), (0, 255, 0), 3)
+
+    return output
+
 
 
 def ball_in_table_detect(img, mask, bg_mask):
@@ -70,20 +84,66 @@ def ball_in_table_detect(img, mask, bg_mask):
 
     return output
 
-def detect_ball_Houghtransform(img, mask):
+def detect_ball_general(img):
+    
+
+    greenLower = (5,50,50)
+    greenUpper = (15,255,255)
+
+    blurred = cv2.GaussianBlur(img, (11, 11), 0)
+    hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+    # construct a mask for the color "green", then perform
+    # a series of dilations and erosions to remove any small
+    # blobs left in the mask
+    mask = cv2.inRange(hsv, greenLower, greenUpper)
+    mask = cv2.erode(mask, None, iterations=2)
+    mask = cv2.dilate(mask, None, iterations=2)
+
+    frame = img.copy()
+    cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
+        cv2.CHAIN_APPROX_SIMPLE)
+    cnts = imutils.grab_contours(cnts)
+    center = None
+    # only proceed if at least one contour was found
+    if len(cnts) > 0:
+        # find the largest contour in the mask, then use
+        # it to compute the minimum enclosing circle and
+        # centroid
+        c = min(cnts, key=cv2.contourArea)
+        ((x, y), radius) = cv2.minEnclosingCircle(c)
+        M = cv2.moments(c)
+        center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+        # only proceed if the radius meets a minimum size
+        if radius > 10:
+            # draw the circle and centroid on the frame,
+            # then update the list of tracked points
+            cv2.circle(frame, (int(x), int(y)), int(radius),
+                (0, 255, 255), 2)
+            cv2.circle(frame, center, 5, (0, 0, 255), -1)
+    return frame
+
+
+def detect_ball_Houghtransform(img, mask, rec):
 
     # Creating kernel
-    kernel = np.ones((7, 7), np.uint8)
-
+    x, y, w, h = rec
+    erosion_size = 7
+    element = cv2.getStructuringElement(2, (2 * erosion_size + 1, 2 * erosion_size + 1),
+                                       (erosion_size, erosion_size))
+    
     output = img.copy()
     ball_segment = mask.copy()
-    ball_segment = cv2.erode(ball_segment, kernel)
+    
+    ball_segment = cv2.erode(ball_segment, element)
+    # cv2.imshow("mask", ball_segment)
+    # cv2.waitKey(0)
 
     detected_circles = cv2.HoughCircles(ball_segment, 
                    cv2.HOUGH_GRADIENT, 1, 50, param1 = 80,
                param2 = 10, minRadius = 1, maxRadius = 50)
 
     c = []
+    ball_to_net = []
     if detected_circles is not None:
         # Convert the circle parameters a, b and r to integers.
         detected_circles = np.uint16(np.around(detected_circles))
@@ -92,12 +152,20 @@ def detect_ball_Houghtransform(img, mask):
         detected_circles = detected_circles[detected_circles[:, 2].argsort()]
         for pt in detected_circles:
             a, b, r = pt[0], pt[1], pt[2]
+            #calculate the length to net
+            ball_to_net.append(abs(a - (x + w//2)))
             # Draw the circumference of the circle.
             cv2.circle(output, (a, b), r, (255, 255, 0), -1)
         
-      
-        c = detected_circles[-1]
-        cv2.circle(output, (c[0], c[1]), c[2], (0, 0, 255), -1)
+        ball_to_net = np.array(ball_to_net)
+        detected_circles = detected_circles[ball_to_net.argsort()]
+        c = detected_circles[0]
+        cx, cy = c[0], c[1]
+        #check ball inside table boundary
+        if((cx > x and cx < x + w) and (cy > y and cy < y + h)):
+            cv2.circle(output, (c[0], c[1]), c[2] // 2, (0, 0, 255), -1)
+        else:
+            c = []
 
     return output, c
 
@@ -115,7 +183,6 @@ def draw_trajectory(img, trajectory):
             else:
                 cv2.line(output, (a1, b1), (a2, b2), (0, 165, 255), 2)
     return output
-
 
 
 def draw_color_hist(img):
@@ -140,8 +207,10 @@ import os
 
 if __name__ == "__main__":
 
-    for video in os.listdir("video_data"):
-        cap = cv2.VideoCapture(os.path.join('video_data', video))
+    for video in (os.listdir("high_quality_video")):
+        if(int(video.split(".")[0]) < 28):
+            continue
+        cap = cv2.VideoCapture(os.path.join('high_quality_video', video))
         fps = cap.get(cv2.CAP_PROP_FPS)
         print("Video name: ", video)
         print("Frame rate: ", int(fps), "FPS")
@@ -149,7 +218,7 @@ if __name__ == "__main__":
         size = (640, 480)
         fourcc = cv2.VideoWriter_fourcc('X','V','I','D')
         # output = cv2.VideoWriter('half_table_middle.avi', fourcc, fps, size)
-        output = cv2.VideoWriter(os.path.join('result_video', video + ".avi"), fourcc, 10, size)
+        output = cv2.VideoWriter(os.path.join('high_quality_result_video', video + ".avi"), fourcc, 10, size)
         flag = 0
         trajectory = []
         try:
@@ -161,7 +230,9 @@ if __name__ == "__main__":
                 if(flag == 0):
                     mask_bg = mask
                     flag += 1
-                table_with_ball, c = detect_ball_Houghtransform(out, mask)
+                table_with_net = net_detect(out, rec)
+
+                table_with_ball, c = detect_ball_Houghtransform(table_with_net, mask, rec)
                 # draw_color_hist(out)
                 if(len(c) > 0):
                     trajectory.append(c)
@@ -169,10 +240,12 @@ if __name__ == "__main__":
                 else:
                     trajectory = []
 
+               
                 cv2.imshow('contours',  table_with_ball)
+                # cv2.imshow('mask', mask)
                 cv2.imshow('frame', re_frame)
                 #   cv2.waitKey(10)
-                if cv2.waitKey(33) & 0xFF == ord('q'):
+                if cv2.waitKey(0) & 0xFF == ord('q'):
                     break
                 output.write(table_with_ball)
         except:
