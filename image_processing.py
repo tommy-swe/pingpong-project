@@ -207,37 +207,37 @@ def draw_score(img, score):
                 cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 3, 2)
     return output
 
-def scoring(img, ball_trace, rec, score, fps, reset):
+def scoring(img, trace, rec, score, fps, reset):
  
-    frame_count = 2 * fps #strat couting from nth frame and consider n frames to get the score
+    n_frames = 2 * fps #strat couting from nth frame and consider n frames to get the score
     n = len(trajectory)
   
-    if(n > frame_count): #at the begining frames, dont do any action, wait until the first n frames has passed -> to get enough information
-        ball_trace = np.array(ball_trace) # you can interpolate some missing balls -> but not solve yet
-        xc, yc, rc = ball_trace[-1] #current frame ball pos
+    if(n > n_frames): #at the begining frames, dont do any action, wait until the first n frames has passed -> to get enough information
+        trace = np.array(trace) # you can interpolate some missing balls -> but not solve yet
+        xc, yc, rc = trace[-1] #current frame ball pos
 
         net = rec[0] + rec[2] // 2
-        decision_frames = ball_trace[(-frame_count-1):-1] #get n frames for scoring decision
+        decision_frames = trace[(-n_frames-1):-1] #get n frames for scoring decision
         rp = np.sum(decision_frames)
 
         if(rc > 0 and rp == 0):  #long pause = no ball afer n frames and has ball at the current frame
             reset = True         # after long pause, initialize new set
 
         side_array = {"OUT": 0, "R": 0, "L": 0} # couting all ball positions in decision frames and divide into 3 case: L side, R side or OUT
-        for i in range(frame_count):
+        for i in range(n_frames):
             x_axis = decision_frames[i][0]
             if(x_axis == 0): side_array["OUT"] += 1 #ball side is decided by correlation between ball and net
             elif(x_axis > net): side_array["R"] += 1
             else: side_array["L"] += 1
 
-        # print(side_array)
-        # print(reset)
+        print(side_array)
+        print(reset)
 
         if(reset == True): # if newset is on, you can decide the score,
                            # if newset is off, that means you already scored last set and the ball is OUT so you dont consider these frames
-            if(side_array["L"] > frame_count / 1.2): score["R"] += 1; reset = False # If the ball stuck in L side, give a score to right side
-            if(side_array["R"] > frame_count / 1.2): score["L"] += 1; reset = False # If the ball stuck in R side, give a score to left side
-            if(side_array["OUT"] == frame_count - 1): # If the ball stuck in OUT side, check the final state and give the socre
+            if(side_array["L"] > n_frames / 1.2): score["R"] += 1; reset = False # If the ball stuck in L side, give a score to right side
+            if(side_array["R"] > n_frames / 1.2): score["L"] += 1; reset = False # If the ball stuck in R side, give a score to left side
+            if(side_array["OUT"] == n_frames - 1): # If the ball stuck in OUT side, check the final state and give the socre
                 a, b, r = decision_frames[0]
                 if(r > 0):
                     if(a < net): score["L"] += 1
@@ -320,7 +320,7 @@ if __name__ == "__main__":
                 # cv2.imshow('mask', mask)
                 cv2.imshow('frame', re_frame)
                     #   cv2.waitKey(10)
-                if cv2.waitKey(fps) & 0xFF == ord('q'):
+                if cv2.waitKey(0) & 0xFF == ord('q'):
                     break
                 output.write(table_with_score)
         except:
