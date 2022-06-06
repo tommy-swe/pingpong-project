@@ -177,12 +177,80 @@ def draw_trajectory(img, trajectory):
         for i in range(max(0, n - 4), n - 1):
             a1, b1, r1 = trajectory[i]
             a2, b2, r2 = trajectory[i+1]
+            if(r1 == 0):
+                continue
+            #interpolate 1 missing point
+            elif(r1 > 0 and r2 == 0):
+                try:
+                    a3, b3, r3 = trajectory[i+2]
+                   
+                    if(r3 > 0):
+                        a2 = (a1 + a3) // 2
+                        b2 = (b1 + b3) // 2
+                    else: continue   
+                except: continue
             cv2.circle(output, (a1, b1), 4, (255, 255, 255), -1)
             if(b2 > b1):
                 cv2.line(output, (a1, b1), (a2, b2), (0, 255, 0), 2)
             else:
                 cv2.line(output, (a1, b1), (a2, b2), (0, 165, 255), 2)
     return output
+
+
+def draw_score(img, score):
+
+    output = img.copy()
+    h, w = output.shape[:2]
+    cv2.putText(output, str(score["L"]), (10, 30), 
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 3, 2)
+    cv2.putText(output, str(score["R"]), (w - 30, 30), 
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 3, 2)
+    return output
+
+def scoring(img, ball_trace, rec, score, fps, reset):
+ 
+    frame_count = 2 * fps #strat couting from nth frame and consider n frames to get the score
+    n = len(trajectory)
+  
+    if(n > frame_count): #at the begining frames, dont do any action, wait until the first n frames has passed -> to get enough information
+        ball_trace = np.array(ball_trace) # you can interpolate some missing balls -> but not solve yet
+        xc, yc, rc = ball_trace[-1] #current frame ball pos
+
+        net = rec[0] + rec[2] // 2
+        decision_frames = ball_trace[(-frame_count-1):-1] #get n frames for scoring decision
+        rp = np.sum(decision_frames)
+
+        if(rc > 0 and rp == 0):  #long pause = no ball afer n frames and has ball at the current frame
+            reset = True         # after long pause, initialize new set
+
+        side_array = {"OUT": 0, "R": 0, "L": 0} # couting all ball positions in decision frames and divide into 3 case: L side, R side or OUT
+        for i in range(frame_count):
+            x_axis = decision_frames[i][0]
+            if(x_axis == 0): side_array["OUT"] += 1 #ball side is decided by correlation between ball and net
+            elif(x_axis > net): side_array["R"] += 1
+            else: side_array["L"] += 1
+
+        # print(side_array)
+        # print(reset)
+
+        if(reset == True): # if newset is on, you can decide the score,
+                           # if newset is off, that means you already scored last set and the ball is OUT so you dont consider these frames
+            if(side_array["L"] > frame_count / 1.2): score["R"] += 1; reset = False # If the ball stuck in L side, give a score to right side
+            if(side_array["R"] > frame_count / 1.2): score["L"] += 1; reset = False # If the ball stuck in R side, give a score to left side
+            if(side_array["OUT"] == frame_count - 1): # If the ball stuck in OUT side, check the final state and give the socre
+                a, b, r = decision_frames[0]
+                if(r > 0):
+                    if(a < net): score["L"] += 1
+                    else: score["R"] += 1
+                    reset = False
+   
+
+    output = draw_score(img, score)
+
+    return output, score, reset
+
+    
+
 
 
 def draw_color_hist(img):
@@ -208,25 +276,30 @@ import os
 if __name__ == "__main__":
 
     for video in (os.listdir("high_quality_video")):
-        if(int(video.split(".")[0]) < 28):
+
+        if(int(video.split(".")[0]) < 28): # check video file name
             continue
+
         cap = cv2.VideoCapture(os.path.join('high_quality_video', video))
-        fps = cap.get(cv2.CAP_PROP_FPS)
+        fps = int(cap.get(cv2.CAP_PROP_FPS))
         print("Video name: ", video)
-        print("Frame rate: ", int(fps), "FPS")
+        print("Frame rate: ", fps, "FPS")
 
         size = (640, 480)
         fourcc = cv2.VideoWriter_fourcc('X','V','I','D')
         # output = cv2.VideoWriter('half_table_middle.avi', fourcc, fps, size)
         output = cv2.VideoWriter(os.path.join('high_quality_result_video', video + ".avi"), fourcc, 10, size)
-        flag = 0
+
+        flag = 0 #initiate some scores
         trajectory = []
+        score = {"L": 0, "R": 0}
+        reset = True
         try:
             while(cap.isOpened()):
                 ret, frame = cap.read()
             
                 re_frame = cv2.resize(frame, size, interpolation = cv2.INTER_AREA)
-                out, mask, rec = detect_table_Color(re_frame)
+                out, mask, rec = detect_table_Color(re_frame) #for speeding up, we only detect table after some frames.
                 if(flag == 0):
                     mask_bg = mask
                     flag += 1
@@ -235,19 +308,21 @@ if __name__ == "__main__":
                 table_with_ball, c = detect_ball_Houghtransform(table_with_net, mask, rec)
                 # draw_color_hist(out)
                 if(len(c) > 0):
-                    trajectory.append(c)
-                    table_with_ball = draw_trajectory(table_with_ball, trajectory)
+                    trajectory.append(c)     
                 else:
-                    trajectory = []
-
-               
-                cv2.imshow('contours',  table_with_ball)
+                    trajectory.append(np.array([0, 0, 0]))
+                # print(trajectory)
+                table_with_ball = draw_trajectory(table_with_ball, trajectory)
+                
+                table_with_score, score, reset = scoring(table_with_ball, trajectory, rec, score, fps, reset)
+                
+                cv2.imshow('contours',  table_with_score)
                 # cv2.imshow('mask', mask)
                 cv2.imshow('frame', re_frame)
-                #   cv2.waitKey(10)
-                if cv2.waitKey(0) & 0xFF == ord('q'):
+                    #   cv2.waitKey(10)
+                if cv2.waitKey(fps) & 0xFF == ord('q'):
                     break
-                output.write(table_with_ball)
+                output.write(table_with_score)
         except:
             cap.release()
-            cv2.destroyAllWindows()
+            cv2.destroyAllWindows() 
