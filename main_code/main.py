@@ -65,7 +65,7 @@ def main():
             
             score_board.scoring()
             l_score, r_score = score_board.score["L"], score_board.score["R"]
-            controller_Digit(l_score, r_score)
+            controller_Digit.setNumber(l_score, r_score)
 
             if(score_board.isshow == True):
                 cv2.imshow('contours',  score_board.result_img)
