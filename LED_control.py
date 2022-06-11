@@ -6,6 +6,7 @@
 
 import RPi.GPIO as GPIO
 import time
+import tm1637
 
 
 # Define a MAP function for mapping values.  Like from 0~255 to 0~100
@@ -69,3 +70,24 @@ class RGBLEDcontroller:
         self.p_B.stop()
 	    # Release resource
         GPIO.cleanup()
+
+
+class DigitLEDcontrolller:
+    """
+    Control
+    """
+    def __init__(self, clk = 5, dio = 4):
+        self.tm = tm1637.TM1637(clk=clk, dio=dio)
+        # self.tm.write([127, 255, 127, 127])
+
+        # all LEDS off
+        self.tm.write([0, 0, 0, 0])
+
+        # show "12:59"
+        # self.tm.numbers(12, 59)
+
+    def setNumber(self, num1, num2):
+        self.tm.numbers(num1, num2)
+
+    def reset(self):
+        self.tm.write([0, 0, 0, 0])
