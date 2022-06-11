@@ -22,7 +22,7 @@ COLOR = [0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFFF]
 
 def main():
 
-    controller = DigitLEDcontrolller(clk=27, dio=22)
+    controller = DigitLEDcontrolller(clk=3, dio=2)
     try:
         while True:
             for (num1, num2) in [(0, 1), (1, 1), (2, 1), (2, 2)]:
