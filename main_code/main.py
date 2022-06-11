@@ -71,8 +71,7 @@ def main():
                     cv2.imshow('contours',  score_board.result_img)
                     cv2.imshow('frame', score_board.curent_frame)
 
-                    #   cv2.waitKey(10)
-                if cv2.waitKey(0) & 0xFF == ord('q'):
+                if cv2.waitKey(20) & 0xFF == ord('q'):
                     break
             
         except:
