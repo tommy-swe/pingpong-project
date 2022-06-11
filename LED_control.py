@@ -48,6 +48,13 @@ class RGBLEDcontroller:
         R_val = (color & 0xFF0000) >> 16
         G_val = (color & 0x00FF00) >> 8
         B_val = (color & 0x0000FF) >> 0
+        # these three lines are used for analyzing the col variables 
+        # assign the first two values of the hexadecimal to R, the middle two assigned to G
+        # assign the last two values to B, please refer to the shift operation of the hexadecimal for details.
+
+        R_val = MAP(R_val, 0, 255, 0, 100)
+        G_val = MAP(G_val, 0, 255, 0, 100)
+        B_val = MAP(B_val, 0, 255, 0, 100)
 
         # Change the colors
         self.p_R.ChangeDutyCycle(R_val)
