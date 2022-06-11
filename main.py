@@ -26,6 +26,7 @@ def main():
     try:
         while True:
             for (num1, num2) in [(0, 1), (1, 1), (2, 1), (2, 2)]:
+                print(num1, num2)
                 controller.setNumber(num1, num2)
                 time.sleep(0.5)
     except KeyboardInterrupt:
