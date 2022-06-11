@@ -5,7 +5,6 @@
 from LED_control import RGBLEDcontroller
 import time
 
-from RGBLED_test import setColor
 
 COLOR = [0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFFF]
 
@@ -15,7 +14,7 @@ def main():
     try:
         while True:
             for color in COLOR:
-                setColor(color)
+                controller.setColor(color)
                 time.sleep(0.5)
     except KeyboardInterrupt:
         controller.stop()
