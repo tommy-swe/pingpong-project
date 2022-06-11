@@ -79,6 +79,10 @@ def main():
             cv2.destroyAllWindows()
             controller_LED.stop()
             controller_Digit.reset()
+            
+        finally:
+            controller_LED.stop()
+            controller_Digit.reset()
 
 if __name__ == '__main__':
     main()
