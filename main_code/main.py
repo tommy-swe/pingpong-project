@@ -69,7 +69,7 @@ def main():
 
                 if(score_board.isshow == True):
                     cv2.imshow('contours',  score_board.result_img)
-                    cv2.imshow('frame', score_board.curent_frame)
+                    # cv2.imshow('frame', score_board.curent_frame)
 
                 if cv2.waitKey(5) & 0xFF == ord('q'):
                     break
@@ -79,7 +79,7 @@ def main():
             cv2.destroyAllWindows()
             controller_LED.stop()
             controller_Digit.reset()
-            
+
         finally:
             controller_LED.stop()
             controller_Digit.reset()
