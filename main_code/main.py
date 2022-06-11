@@ -54,31 +54,31 @@ def main():
 
         score_board = PingPongAlg(fps = fps, isshow=True, isdraw=True)
 
-    # try:
-        while(cap.isOpened()):
-            ret, frame = cap.read()
+        try:
+            while(cap.isOpened()):
+                ret, frame = cap.read()
 
-            # table detection
-            score_board.table_detection(frame=frame)
-            # ball detection
-            score_board.ball_detection()
+                # table detection
+                score_board.table_detection(frame=frame)
+                # ball detection
+                score_board.ball_detection()
+                
+                score_board.scoring()
+                l_score, r_score = score_board.score["L"], score_board.score["R"]
+                controller_Digit.setNumber(l_score, r_score)
+
+                if(score_board.isshow == True):
+                    cv2.imshow('contours',  score_board.result_img)
+                    cv2.imshow('frame', score_board.curent_frame)
+
+                if cv2.waitKey(5) & 0xFF == ord('q'):
+                    break
             
-            score_board.scoring()
-            l_score, r_score = score_board.score["L"], score_board.score["R"]
-            controller_Digit.setNumber(l_score, r_score)
-
-            if(score_board.isshow == True):
-                cv2.imshow('contours',  score_board.result_img)
-                cv2.imshow('frame', score_board.curent_frame)
-
-            if cv2.waitKey(20) & 0xFF == ord('q'):
-                break
-        
-    # except:
-        cap.release()
-        cv2.destroyAllWindows()
-        controller_LED.stop()
-        controller_Digit.reset()
+        except:
+            cap.release()
+            cv2.destroyAllWindows()
+            controller_LED.stop()
+            controller_Digit.reset()
 
 if __name__ == '__main__':
     main()
