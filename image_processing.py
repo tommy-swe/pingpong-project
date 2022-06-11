@@ -1,14 +1,8 @@
-from json.tool import main
-from tkinter.messagebox import NO
-from typing import final
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import cm
 from matplotlib import colors
 import imutils
-from sympy import re
 
 
 
@@ -210,7 +204,7 @@ def draw_score(img, score):
 def scoring(img, trace, rec, score, fps, reset):
  
     n_frames = 2 * fps #strat couting from nth frame and consider n frames to get the score
-    n = len(trajectory)
+    n = len(trace)
   
     if(n > n_frames): #at the begining frames, dont do any action, wait until the first n frames has passed -> to get enough information
         trace = np.array(trace) # you can interpolate some missing balls -> but not solve yet
