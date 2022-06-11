@@ -52,7 +52,7 @@ def main():
         print("Video name: ", video)
         print("Frame rate: ", fps, "FPS")
 
-        score_board = PingPongAlg(fps = fps, isshow=True, isdraw=True)
+        score_board = PingPongAlg(fps = fps, isshow=False, isdraw=False)
 
         try:
             while(cap.isOpened()):
@@ -65,13 +65,15 @@ def main():
                 
                 score_board.scoring()
                 l_score, r_score = score_board.score["L"], score_board.score["R"]
+                print(l_score, r_score)
                 controller_Digit.setNumber(l_score, r_score)
 
                 if(score_board.isshow == True):
                     cv2.imshow('contours',  score_board.result_img)
                     # cv2.imshow('frame', score_board.curent_frame)
+                    cv2.waitKey(5)
 
-                if cv2.waitKey(5) & 0xFF == ord('q'):
+                if 0xFF == ord('q'):
                     break
             
         except:
