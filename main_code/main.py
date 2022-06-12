@@ -126,7 +126,7 @@ def main():
             while(True):
                 ret, frame = cam.read()
 
-                if(int(time.time() - st_time) > 2 * 60): #new record after n seconds
+                if(int(time.time() - st_time) > 1 * 60): #new record after n seconds
                     break
                 
                 try:
