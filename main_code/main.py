@@ -4,6 +4,7 @@
 ## Main script for run code
 
 from numpy import r_
+from sqlalchemy import true
 from LED_control import RGBLEDcontroller, DigitLEDcontrolller
 import time
 import os
@@ -87,6 +88,7 @@ COLOR = [0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFFF]
 #         #     controller_LED.stop()
 #         #     controller_Digit.reset()
 
+## prarameters set later ----> remain
 
 def main():
 
@@ -113,7 +115,7 @@ def main():
             controller_LED.setColor(COLOR[0])
             fps = int(cam.get(cv2.CAP_PROP_FPS))
             print("Frame rate: ", fps, "FPS")
-            score_board = PingPongAlg(fps = fps, isshow=False, isdraw=False)
+            score_board = PingPongAlg(fps = fps, isshow=True, isdraw=True, issave=True)
 
             if(score_board.issave == True):
                 size = score_board.base_size
@@ -125,27 +127,27 @@ def main():
             while(True):
                 ret, frame = cam.read()
 
-                if(int(time.time() - st_time) > 0.5 * 60): #new record after n seconds
+                if(int(time.time() - st_time) > 2 * 60): #new record after n seconds
                     break
 
                 if(ret == True):
                     
-                    # # table detection
-                    # score_board.table_detection(frame=frame)
-                    # # ball detection
-                    # score_board.ball_detection()
-                    # #ball scoring
-                    # score_board.scoring()
-                    # l_score, r_score = score_board.score["L"], score_board.score["R"]
-                    # print(l_score, r_score)
-                    # controller_Digit.setNumber(l_score, r_score)
+                    # table detection
+                    score_board.table_detection(frame=frame)
+                    # ball detection
+                    score_board.ball_detection()
+                    #ball scoring
+                    score_board.scoring()
+                    l_score, r_score = score_board.score["L"], score_board.score["R"]
+                    print(l_score, r_score)
+                    controller_Digit.setNumber(l_score, r_score)
 
-                    # if(score_board.isshow == True):
-                    #     cv2.imshow('contours',  score_board.result_img)
-                    #     # cv2.imshow('frame', score_board.curent_frame)
-                    #     cv2.waitKey(1)
+                    if(score_board.isshow == True):
+                        cv2.imshow('contours',  score_board.result_img)
+                        # cv2.imshow('frame', score_board.curent_frame)
+                        # cv2.waitKey(1)
 
-                    cv2.imshow('frame', frame)
+                    # cv2.imshow('frame', frame)
 
                     if cv2.waitKey(1) & 0xFF == ord('s'):
                         break
