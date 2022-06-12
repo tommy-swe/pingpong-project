@@ -157,7 +157,7 @@ def main():
 
             cam.release()
             cv2.destroyAllWindows()
-            controller_LED.stop()
+            # controller_LED.stop()
             controller_Digit.reset()
 
         print("stop")
