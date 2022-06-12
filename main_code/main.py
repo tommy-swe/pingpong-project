@@ -3,8 +3,7 @@
 
 ## Main script for run code
 
-from numpy import r_
-from sqlalchemy import true
+
 from LED_control import RGBLEDcontroller, DigitLEDcontrolller
 import time
 import os
