@@ -75,16 +75,22 @@ def main():
 
                 if 0xFF == ord('q'):
                     break
-            
         except:
             cap.release()
             cv2.destroyAllWindows()
             controller_LED.stop()
             controller_Digit.reset()
 
-        finally:
-            controller_LED.stop()
-            controller_Digit.reset()
+        # finally:
+        #     cap.release()
+        #     cv2.destroyAllWindows()
+        #     controller_LED.stop()
+        #     controller_Digit.reset()
+
+
+def main():
+    
+
 
 if __name__ == '__main__':
     main()
