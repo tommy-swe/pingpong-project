@@ -138,7 +138,7 @@ def main():
                     #ball scoring
                     score_board.scoring()
                     l_score, r_score = score_board.score["L"], score_board.score["R"]
-                    print(l_score, r_score)
+                    # print(l_score, r_score)
                     controller_Digit.setNumber(l_score, r_score)
 
                     if(score_board.isshow == True):
