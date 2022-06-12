@@ -109,6 +109,7 @@ def main():
         else:
             #start recording:
             st_time = time.time()
+            print("new_recording")
             controller_LED.setColor(COLOR[0])
             fps = int(cam.get(cv2.CAP_PROP_FPS))
             print("Frame rate: ", fps, "FPS")
@@ -124,7 +125,7 @@ def main():
             while(True):
                 ret, frame = cam.read()
 
-                if(int(time.time() - st_time) > 5 * 60): #new record after n seconds
+                if(int(time.time() - st_time) > 1 * 60): #new record after n seconds
                     break
 
                 if(ret == True):
@@ -159,7 +160,10 @@ def main():
             controller_LED.stop()
             controller_Digit.reset()
 
-        time.sleep(30)
+        print("stop")
+        controller_LED.setColor(COLOR[2])
+        time.sleep(5)
+        
 
 
 if __name__ == '__main__':
