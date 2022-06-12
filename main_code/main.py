@@ -125,7 +125,7 @@ def main():
             while(True):
                 ret, frame = cam.read()
 
-                if(int(time.time() - st_time) > 1 * 60): #new record after n seconds
+                if(int(time.time() - st_time) > 0.5 * 60): #new record after n seconds
                     break
 
                 if(ret == True):
@@ -162,7 +162,7 @@ def main():
 
         print("stop")
         controller_LED.setColor(COLOR[2])
-        time.sleep(5)
+        time.sleep(10)
         
 
 
