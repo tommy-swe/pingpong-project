@@ -110,7 +110,7 @@ def main():
             #start recording:
             st_time = time.time()
             controller_LED.setColor(COLOR[0])
-            fps = int(cam.get(cv2.cam_PROP_FPS))
+            fps = int(cam.get(cv2.CAP_PROP_FPS))
             print("Frame rate: ", fps, "FPS")
             score_board = PingPongAlg(fps = fps, isshow=False, isdraw=False)
 
