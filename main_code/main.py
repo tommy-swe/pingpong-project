@@ -91,6 +91,13 @@ COLOR = [0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFFF]
 
 def main():
 
+    #hyper parameters:
+    stop_time = 20
+    set_time = 60
+    is_showing = True
+    is_drawing = True
+    is_saving = True
+
     controller_LED = RGBLEDcontroller()
     controller_LED.setup()
     controller_Digit = DigitLEDcontrolller(clk=3, dio=2)
@@ -114,7 +121,7 @@ def main():
             controller_LED.setColor(COLOR[0])
             fps = int(cam.get(cv2.CAP_PROP_FPS))
             print("Frame rate: ", fps, "FPS")
-            score_board = PingPongAlg(fps = 10, isshow=True, isdraw=True, issave=True)
+            score_board = PingPongAlg(fps = 10, isshow=is_showing, isdraw=is_drawing, issave=is_saving)
 
             if(score_board.issave == True):
                 size = score_board.base_size
@@ -126,7 +133,7 @@ def main():
             while(True):
                 ret, frame = cam.read()
 
-                if(int(time.time() - st_time) > 1 * 60): #new record after n seconds
+                if(int(time.time() - st_time) > 1 * set_time): #new record after n seconds
                     break
                 
                 try:
@@ -167,7 +174,7 @@ def main():
         print("stop")
         controller_LED.setColor(COLOR[2])
         controller_Digit.reset()
-        time.sleep(10)
+        time.sleep(stop_time)
         
 
 
