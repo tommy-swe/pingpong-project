@@ -9,7 +9,7 @@ import time
 import os
 import cv2
 from Alg import PingPongAlg
-
+import argparse
 
 
 COLOR = [0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFFF]
@@ -89,14 +89,7 @@ COLOR = [0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFFF]
 
 ## prarameters set later ----> remain
 
-def main():
-
-    #hyper parameters:
-    stop_time = 20
-    set_time = 60
-    is_showing = True
-    is_drawing = True
-    is_saving = True
+def main(args):
 
     controller_LED = RGBLEDcontroller()
     controller_LED.setup()
@@ -121,7 +114,7 @@ def main():
             controller_LED.setColor(COLOR[0])
             fps = int(cam.get(cv2.CAP_PROP_FPS))
             print("Frame rate: ", fps, "FPS")
-            score_board = PingPongAlg(fps = 10, isshow=is_showing, isdraw=is_drawing, issave=is_saving)
+            score_board = PingPongAlg(fps = 10, isshow=args.is_showing, isdraw=args.is_drawing, issave=args.is_saving)
 
             if(score_board.issave == True):
                 size = score_board.base_size
@@ -133,7 +126,7 @@ def main():
             while(True):
                 ret, frame = cam.read()
 
-                if(int(time.time() - st_time) > 1 * set_time): #new record after n seconds
+                if(int(time.time() - st_time) > 1 * args.set_time): #new record after n seconds
                     break
                 
                 try:
@@ -174,12 +167,27 @@ def main():
         print("stop")
         controller_LED.setColor(COLOR[2])
         controller_Digit.reset()
-        time.sleep(stop_time)
+        time.sleep(args.stop_time)
         
 
 
 if __name__ == '__main__':
-    main()
+
+    parser = argparse.ArgumentParser(description='Hyper parameters.')
+    parser.add_argument('--stop_time', metavar='N', type=int, nargs='+', required=True,
+                    help='n seconds that stop recording', default=20)
+    parser.add_argument('--set_time', metavar='N', type=int, nargs='+', required=True,
+                    help='n seconds for a playing set', default=60)
+    parser.add_argument('--is_showing', type=bool, default=True, required=True,
+                    help='showing the frame')
+    parser.add_argument('--is_drawing', type=bool, default=True, required=True,
+                    help='drawing the frame')
+    parser.add_argument('--is_saving', type=bool, default=True, required=True,
+                    help='saving the frame')
+
+
+    args = parser.parse_args()
+    main(args)
 
 
 
