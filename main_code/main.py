@@ -174,15 +174,15 @@ def main(args):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Hyper parameters.')
-    parser.add_argument('--stop_time', metavar='N', type=int, nargs='+', required=True,
+    parser.add_argument('--stop_time', metavar='N', type=int, nargs='+',
                     help='n seconds that stop recording', default=20)
-    parser.add_argument('--set_time', metavar='N', type=int, nargs='+', required=True,
+    parser.add_argument('--set_time', metavar='N', type=int, nargs='+',
                     help='n seconds for a playing set', default=60)
-    parser.add_argument('--is_showing', type=bool, default=True, required=True,
+    parser.add_argument('--is_showing', type=bool, default=True,
                     help='showing the frame')
-    parser.add_argument('--is_drawing', type=bool, default=True, required=True,
+    parser.add_argument('--is_drawing', type=bool, default=True,
                     help='drawing the frame')
-    parser.add_argument('--is_saving', type=bool, default=True, required=True,
+    parser.add_argument('--is_saving', type=bool, default=True,
                     help='saving the frame')
 
 
