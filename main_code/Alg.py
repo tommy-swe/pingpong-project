@@ -7,6 +7,10 @@ import numpy as np
 import cv2
 
 
+def unique_count_app(a):
+    colors, count = np.unique(a.reshape(-1,a.shape[-1]), axis=0, return_counts=True)
+    return colors[count.argmax()]
+
 def draw_score(img, score):
 
     h, w = img.shape[:2]
@@ -62,14 +66,17 @@ class PingPongAlg:
         self.curent_frame = cv2.resize(frame, self.base_size, interpolation = cv2.INTER_AREA)
         height,width = self.base_size
         hsv = cv2.cvtColor(self.curent_frame, cv2.COLOR_BGR2HSV)
-        h, s, v = cv2.split(hsv)
+        # h, s, v = cv2.split(hsv)
 
         #table segmentation
-        light_blue = (105, 70, 70)
-        dark_blue = (128, 255, 255)
+        most_dominant_color = unique_count_app(hsv)
+        light_blue = np.array(most_dominant_color) - np.array([5, 100, 100])
+        dark_blue = np.array(most_dominant_color) + np.array([5, 50, 50])
+        # light_blue = (105, 70, 70)
+        # dark_blue = (128, 255, 255)
     
         mask_blue = cv2.inRange(hsv, light_blue, dark_blue)
-        final_mask = cv2.medianBlur(mask_blue, ksize = 9)
+        final_mask = cv2.medianBlur(mask_blue, ksize = 11)
 
         #draw contours        
         contours, hierarchy = cv2.findContours(final_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
@@ -113,7 +120,7 @@ class PingPongAlg:
 
         # Creating kernel
         x, y, w, h = self.rec
-        erosion_size = 7
+        erosion_size = 5
         element = cv2.getStructuringElement(2, (2 * erosion_size + 1, 2 * erosion_size + 1),
                                        (erosion_size, erosion_size))
 

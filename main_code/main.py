@@ -114,13 +114,13 @@ def main(args):
             controller_LED.setColor(COLOR[0])
             fps = int(cam.get(cv2.CAP_PROP_FPS))
             print("Frame rate: ", fps, "FPS")
-            score_board = PingPongAlg(fps = 10, isshow=args.is_showing, isdraw=args.is_drawing, issave=args.is_saving)
+            score_board = PingPongAlg(fps = fps, isshow=args.is_showing, isdraw=args.is_drawing, issave=args.is_saving)
 
             if(score_board.issave == True):
                 size = score_board.base_size
                 fourcc = cv2.VideoWriter_fourcc('X','V','I','D')
                 # fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-                output = cv2.VideoWriter(str(int(st_time)) + ".avi", fourcc, fps, size)
+                output = cv2.VideoWriter(str(int(st_time)) + ".avi", fourcc, 5, size)
 
           
             while(True):

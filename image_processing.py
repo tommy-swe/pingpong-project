@@ -4,17 +4,22 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 import imutils
 
-
+def unique_count_app(a):
+    colors, count = np.unique(a.reshape(-1,a.shape[-1]), axis=0, return_counts=True)
+    return colors[count.argmax()]
 
 def detect_table_Color(img):
 
     height,width = img.shape[:2]
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    h, s, v = cv2.split(hsv)
+    most_dominant_color = unique_count_app(hsv)
+    # h, s, v = cv2.split(hsv)
    
     #table segmentation
-    light_blue = (105, 70, 70)
-    dark_blue = (128, 255, 255)
+    # light_blue = (105, 70, 70) 
+    # dark_blue = (128, 255, 255)
+    light_blue = np.array(most_dominant_color) - np.array([5, 100, 100])
+    dark_blue = np.array(most_dominant_color) + np.array([5, 50, 50])
     
     mask_blue = cv2.inRange(hsv, light_blue, dark_blue)
   
@@ -22,7 +27,7 @@ def detect_table_Color(img):
     final_mask = mask_blue # segment only table
   
    
-    final_mask = cv2.medianBlur(final_mask, ksize = 9)
+    final_mask = cv2.medianBlur(final_mask, ksize = 11)
     pesudo_mask = np.zeros((height,width), np.uint8)
 
     #draw contours        
@@ -311,9 +316,9 @@ if __name__ == "__main__":
                 table_with_score, score, reset = scoring(table_with_ball, trajectory, rec, score, fps, reset)
                 
                 cv2.imshow('contours',  table_with_score)
-                # cv2.imshow('mask', mask)
+                cv2.imshow('mask', mask)
                 cv2.imshow('frame', re_frame)
-                    #   cv2.waitKey(10)
+                    #   cv2.waitKey(10)qq
                 if cv2.waitKey(0) & 0xFF == ord('q'):
                     break
                 output.write(table_with_score)
