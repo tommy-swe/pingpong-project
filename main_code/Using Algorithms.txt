@@ -1,0 +1,25 @@
+1. Color Segmentation (Table Detection)
+Algorithm Name: Color-based Image Segmentation
+Description: This part of the code uses color segmentation to detect the ping pong table.
+It identifies the most dominant color in the image (assumed to be the color of the table) and creates a mask to isolate the table from the background.
+This is achieved using the cv2.inRange function and contour detection.
+
+2. Circle Detection (Ball Detection)
+Algorithm Name: Hough Circle Transform
+Description: The ball detection is performed using the Hough Circle Transform, which is implemented in OpenCV as cv2.HoughCircles. 
+This technique is used to detect circular shapes (i.e., the ball) in the masked image, which is then further refined to track the position of the ball on the table.
+
+3. Trajectory Tracking
+Algorithm Name: Object Trajectory Tracking
+Description: The trajectory of the ball is tracked by storing the ball's positions over time in a list.
+This allows for drawing the path that the ball has taken on the screen, which helps visualize its movement during the game.
+
+4. Scoring Mechanism
+Algorithm Name: Rule-based Scoring Algorithm
+Description: The scoring is based on the position of the ball relative to the net and which side of the table it falls on.
+The algorithm decides the score by analyzing the ball's trajectory and determining if the ball has passed the net and landed on one side of the table or out of bounds.
+
+5. Utility Functions
+Functions: unique_count_app, draw_score, draw_trajectory
+Description: These are helper functions that assist in counting unique colors, drawing the score on the image, 
+and visualizing the ball’s trajectory.
