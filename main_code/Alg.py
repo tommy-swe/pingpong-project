@@ -1,4 +1,4 @@
-## Author: Dang Thanh Vu & Tokhirjon Turgunov(Dima)
+## Author: Dang Thanh Vu & Tokhirjon Turgunov(Tommy)
 ## Date: 2022.09
 
 # this script is for main algorithm of PingPong project
